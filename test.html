@@ -27,14 +27,27 @@
   let t;
   let penPicker;
   let framePicker;
+  let penSettings;
   function setup() {
     createCanvas(2000, 2000);
     translate(1000,1000)
     rotate(PI)
     background(0);
+
+    penSettings = createDiv('Pen Settings')
+    penSettings.position(45, 95)
+    penSettings.size(300, 300)
+    penSettings.style('font-size', '16px');
+    penSettings.style('font-family', 'Comic Sans MS');
+    penSettings.style('background', 'orchid');
+    penSettings.style('padding', '5px');
+    penSettings.draggable();
+
     penPicker = createColorPicker('deeppink');
-    penPicker.position(50, 100);
+    penPicker.position(100, 125);
     penPicker.size(100, 100)
+    penPicker.draggable()
+
     stroke(penPicker.color());
     
     noFill();
@@ -42,6 +55,7 @@
     framePicker = createColorPicker('blue')
     framePicker.position(250, 100)
     framePicker.size(100, 100)
+    framePicker.draggable()
     drawFrame();
 
   }
@@ -67,7 +81,7 @@
     //translate origin to center
     translate(1000,1000)
     rotate(PI)
-    drawFrame()
+    framePicker.changed(drawFrame)
     stroke(penPicker.color());
     
     circle(0,0,10)
