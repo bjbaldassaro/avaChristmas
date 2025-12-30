@@ -1,4 +1,4 @@
-  let x;
+let x;
   let y;
   let t;
   let penSettings;
@@ -7,6 +7,7 @@
   let frameColor
   let frameSize
   let capture
+  let paintLayer
 
   class Settings {
  
@@ -33,13 +34,14 @@
     translate(1000,1000)
     rotate(PI)
     background(0);
-
+    
+    //pen settings
     penSettings = new Settings(800, 300, 'Pen Settings')
     penColor = createColorPicker('deeppink')
     penColor.size(100,100)
     penSettings.addElement(penColor, 20, 20)
     
-
+    //frame settings
     frameSettings = new Settings(300,300, 'Frame Settings')
     frameColor = createColorPicker('green')
     frameColor.size(100,100)
@@ -48,11 +50,19 @@
     frameSize = createInput()
     frameSettings.addElement(frameSize, 10, 200)
 
+    //create webcam
     capture = createCapture(VIDEO, {flipped:true})
-    capture.size(2000, 2000)
     capture.hide()
 
     noFill();
+    
+    //create paint buffer
+    paintLayer = createGraphics(2000, 2000)
+    paintLayer.translate(1000,1000)
+    paintLayer.rotate(PI)
+    paintLayer.clear()
+    paintLayer.noFill()
+
     drawFrame();
     
 
@@ -60,36 +70,39 @@
 
   function drawFrame(){
     //draw frame
-    stroke(frameColor.color())
+    paintLayer.stroke(frameColor.color())
+
     for(let fx = -450; fx < 450; fx++){
-      circle(fx, -450, 30)
+      paintLayer.circle(fx, -450, 30)
     }
     for(let fx = -450; fx < 450; fx++){
-      circle(450, fx, 30)
+      paintLayer.circle(450, fx, 30)
     }
     for(let fx = 450; fx > -450; fx--){
-      circle(fx, 450, 30)
+      paintLayer.circle(fx, 450, 30)
     }
     for(let fx = 450; fx > -450; fx--){
-      circle(-450, fx, 30)
+      paintLayer.circle(-450, fx, 30)
     }
     
   }
   function draw() {
     //translate origin to center
+    image(capture, 0,0, 2000, 2000)
+    image(paintLayer, 0, 0)
     translate(1000,1000)
-    rotate(PI)
-    frameColor.changed(drawFrame)
-    stroke(penColor.color());
     
-    image(capture, 0,0,width, height)
-
-    circle(0,0,10)
+    rotate(PI)
+    
+    
+    frameColor.changed(drawFrame)
+    paintLayer.stroke(penColor.color());
+    
     //draw heart
     t = frameCount *.05 % 360;
     x = 16*pow(sin(t), 3);
     y = 13*cos(t) - 5*cos(2*t) - 2*cos(3*t) - cos(4*t);
-    circle(6*x,6*y, 10);   
+    paintLayer.circle(6*x,6*y, 10);   
 
 
     //draw frame
