@@ -1,4 +1,4 @@
-let x;
+  let x;
   let y;
   let t;
   let penSettings;
@@ -26,7 +26,7 @@ let x;
 
     addElement(elem, lx, ly){
       this.frame.child(elem)
-      elem.position(this.x + lx, this.y + ly)
+      elem.position(lx, ly)
     }
   }
   function setup() {
@@ -39,16 +39,19 @@ let x;
     penSettings = new Settings(800, 300, 'Pen Settings')
     penColor = createColorPicker('deeppink')
     penColor.size(100,100)
-    penSettings.addElement(penColor, 20, 20)
+    penSettings.addElement(penColor, 0, 0)
+    penSize = createSlider(0,100,10)
+    penSettings.addElement(penSize)
+    heartSize = createSlider(0,10,6)
+    penSettings.addElement(heartSize, 0, 100)
     
     //frame settings
     frameSettings = new Settings(300,300, 'Frame Settings')
     frameColor = createColorPicker('green')
     frameColor.size(100,100)
-    frameSettings.addElement(frameColor, 20, 200)
-
-    frameSize = createInput()
-    frameSettings.addElement(frameSize, 10, 200)
+    frameSettings.addElement(frameColor, 20, 20)
+    frameSize = createSlider(0, 20, 10)
+    frameSettings.addElement(frameSize, 0, 100)
 
     //create webcam
     capture = createCapture(VIDEO, {flipped:true})
@@ -71,18 +74,18 @@ let x;
   function drawFrame(){
     //draw frame
     paintLayer.stroke(frameColor.color())
-
-    for(let fx = -450; fx < 450; fx++){
-      paintLayer.circle(fx, -450, 30)
+    let fSize = frameSize.value()/10
+    for(let fx = fSize*-450; fx < fSize*450; fx++){
+      paintLayer.circle(fx, fSize*-450, 30)
     }
-    for(let fx = -450; fx < 450; fx++){
-      paintLayer.circle(450, fx, 30)
+    for(let fx = fSize*-450; fx < fSize*450; fx++){
+      paintLayer.circle(fSize*450, fx, 30)
     }
-    for(let fx = 450; fx > -450; fx--){
-      paintLayer.circle(fx, 450, 30)
+    for(let fx = fSize*450; fx > fSize*-450; fx--){
+      paintLayer.circle(fx, fSize*450, 30)
     }
-    for(let fx = 450; fx > -450; fx--){
-      paintLayer.circle(-450, fx, 30)
+    for(let fx = fSize*450; fx > fSize*-450; fx--){
+      paintLayer.circle(fSize*-450, fx, 30)
     }
     
   }
@@ -96,31 +99,17 @@ let x;
     
     
     frameColor.changed(drawFrame)
+    frameSize.changed(drawFrame)
     paintLayer.stroke(penColor.color());
     
     //draw heart
+    let size = penSize.value()
+    let heart = heartSize.value()
     t = frameCount *.05 % 360;
     x = 16*pow(sin(t), 3);
     y = 13*cos(t) - 5*cos(2*t) - 2*cos(3*t) - cos(4*t);
-    paintLayer.circle(6*x,6*y, 10);   
+    paintLayer.circle(heart*x,heart*y, size);   
 
-
-    //draw frame
-    // circle(fx, fy, 10);
-    
-
-    // if(fx == -500 && fy < 500){
-    //   fy += 1;
-    // }
-    // else if(fx < 500 && fy == 500){
-    //   fx += 1;
-    // }
-    // else if(fx == 500 && fy > -500){
-    //   fy -= 1;
-    // }
-    // else if(fx > -500 && fy == -500){
-    //   fx -= 1;
-    // }
 
 
   }
