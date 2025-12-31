@@ -26,7 +26,7 @@ let x;
 
     addElement(elem, lx, ly){
       this.frame.child(elem)
-      elem.position(x + lx, y + ly)
+      elem.position(this.x + lx, this.y + ly)
     }
   }
   function setup() {
